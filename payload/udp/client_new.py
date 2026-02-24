@@ -3,7 +3,7 @@ import struct
 import sys
 import os
 
-SERVER_IP = "10.0.0.2"
+SERVER_IP = "10.0.0.1"
 PORT = 5009
 
 # Keep this MTU-safe unless you KNOW you can go bigger without fragmentation

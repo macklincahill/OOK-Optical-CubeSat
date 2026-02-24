@@ -27,6 +27,7 @@ def main():
     expected_seq = 0
     total_bytes = 0
     missing_ranges = []  # list of (start, end) inclusive
+    num_packet_loss = 0
 
     last_print = time.time()
 
@@ -46,6 +47,7 @@ def main():
                     mf.write(f"expected_next_seq={expected_seq}\n")
                     mf.write("missing_ranges_inclusive:\n")
                     for a, b in missing_ranges:
+                        num_packet_loss += 1
                         mf.write(f"{a}-{b}\n")
                 break
 
@@ -86,6 +88,7 @@ def main():
 
     print(f"[RX DONE] wrote {total_bytes} bytes to {out_path}")
     print(f"[RX DONE] missing ranges logged to {missing_path}")
+    print(f"[RX DONE] packets lost: {num_packet_loss}")
 
 if __name__ == "__main__":
     main()
