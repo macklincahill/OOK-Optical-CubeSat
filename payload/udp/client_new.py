@@ -1,14 +1,12 @@
 import socket
 import struct
 import sys
-import os
+import time
 
 SERVER_IP = "10.0.0.1"
 PORT = 5009
 
-# Keep this MTU-safe unless you KNOW you can go bigger without fragmentation
-CHUNK_SIZE = 1460  # try 1200 if you suspect fragmentation; try 1400-1460 if safe
-
+CHUNK_SIZE = 1460
 HDR = struct.Struct("!I")
 EOF_SEQ = 0xFFFFFFFF
 
@@ -29,6 +27,7 @@ def main():
     seq = 0
     sent_bytes = 0
 
+    t0 = time.time()
     with open(file_path, "rb") as f:
         while True:
             data = f.read(CHUNK_SIZE)
@@ -39,10 +38,17 @@ def main():
             sent_bytes += len(data)
             seq += 1
 
-    # Send EOF marker
     sock.sendto(HDR.pack(EOF_SEQ), (server_ip, port))
+    t1 = time.time()
 
-    print(f"[TX DONE] sent {sent_bytes} bytes in {seq} packets to {server_ip}:{port}")
+    dt = t1 - t0
+    mbps = (sent_bytes * 8 / dt / 1e6) if dt > 0 else 0.0
+
+    print(f"[TX DONE] sent_bytes: {sent_bytes}")
+    print(f"[TX DONE] sent_packets: {seq}")
+    print(f"[TX DONE] duration_s: {dt:.3f}")
+    print(f"[TX DONE] average_send_Mbps: {mbps:.2f}")
+    print(f"[TX DONE] to {server_ip}:{port}")
 
 if __name__ == "__main__":
     main()
