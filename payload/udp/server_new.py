@@ -20,6 +20,8 @@ def main():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((LISTEN_IP, PORT))
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, SOCK_RCVBUF)
+    
+    print(f"[RX] Listening on {LISTEN_IP}:{PORT} ...")
 
     out_path = Path(OUT_FILE)
     missing_path = out_path.with_suffix(out_path.suffix + ".missing.txt")

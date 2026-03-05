@@ -3,7 +3,7 @@ import struct
 import sys
 import time
 
-SERVER_IP = "10.0.0.1"
+SERVER_IP = "10.0.0.2"
 PORT = 5010
 
 CHUNK_SIZE = 1460
