@@ -6,7 +6,7 @@ import time
 import zlib
 
 SERVER_ADDRESS = "10.0.0.2"
-SERVER_PORT = 5009
+SERVER_PORT = 5010
 
 CHUNK_SIZE = 1460         
 SOCKET_TIMEOUT = 0.25          # seconds
