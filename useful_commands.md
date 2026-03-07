@@ -6,6 +6,11 @@
 
 `dd if=/dev/zero of=[filename] bs=1M count=[size_in_megabytes]` - generate file of a given size
 
+`dd if=/dev/zero bs=1M count=[size_in_megabytes] | tr '\000' '\377' > [filename]` where '\377 is a value in octal which replaces the zeros in the file, \377 results in a file containing all 1s.
+
+`sudo ethtool -m [network card, ex: enp7s0f0]` - view the power of the SFP module
+
+
 # Transceiver orde
 The bracket has an L shape, the transceiver closest to that bracket is 0.
 
@@ -13,7 +18,6 @@ The bracket has an L shape, the transceiver closest to that bracket is 0.
 https://askubuntu.com/questions/22835/how-to-network-two-ubuntu-computers-using-ethernet-without-a-router/
 
 # How to Git
-
 First, get the data from the repository
 `git pull`
 
