@@ -4,7 +4,7 @@ import sys
 import time
 
 SERVER_IP = "10.0.0.2"
-PORT = 5010
+PORT = 5011
 
 CHUNK_SIZE = 1460
 HDR = struct.Struct("!I")

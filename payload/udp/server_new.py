@@ -5,7 +5,7 @@ from pathlib import Path
 
 # Bind + output
 LISTEN_IP = "0.0.0.0"
-PORT = 5010
+PORT = 5011
 OUT_FILE = "received.bin"
 
 # Datagram format: 4-byte big-endian seq + payload
