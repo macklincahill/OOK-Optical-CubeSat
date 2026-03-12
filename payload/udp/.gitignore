@@ -1,3 +1,5 @@
 payload/udp/received_file.bin
+payload/udp/high_test
+payload/udp/low_test
 
 *.mp4
