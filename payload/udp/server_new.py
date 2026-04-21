@@ -5,7 +5,7 @@ from pathlib import Path
 
 # Bind + output
 LISTEN_IP = "0.0.0.0"
-PORT = 5011
+PORT = 5012
 OUT_FILE = "received.bin"
 
 # Datagram format: 4-byte big-endian seq + payload
@@ -30,6 +30,7 @@ def main():
 
     # Metrics
     first_rx_time = None
+    previous_rx_time = None # catch timeout
     last_rx_time = None
     received_packets = 0
     received_payload_bytes = 0
@@ -46,6 +47,7 @@ def main():
 
             seq = HDR.unpack_from(pkt, 0)[0]
             payload = pkt[4:]
+            previous_rx_time = time.time()
 
             # Start timing on first non-EOF packet
             if first_rx_time is None and seq != EOF_SEQ:
@@ -99,6 +101,21 @@ def main():
                 mbps = (received_payload_bytes * 8 / elapsed / 1e6) if elapsed > 0 else 0.0
                 print(f"[RX] expected_seq={expected_seq}  rx_bytes={received_payload_bytes}  avg_Mbps={mbps:.2f}")
                 last_print = now
+                
+            if now - previous_rx_time >= 5:
+                # Timeout!
+                last_rx_time = previous_rx_time()
+                print(f"[ERR] System timed out")
+
+                # Write missing ranges log + compute lost_packets correctly
+                with open(missing_path, "w") as mf:
+                    mf.write(f"source={addr[0]}:{addr[1]}\n")
+                    mf.write(f"expected_next_seq={expected_seq}\n")
+                    mf.write("missing_ranges_inclusive:\n")
+                    for a, b in missing_ranges:
+                        mf.write(f"{a}-{b}\n")
+                        lost_packets += (b - a + 1)
+                break
 
     # Final metrics
     duration = (last_rx_time - first_rx_time) if (first_rx_time and last_rx_time) else 0.0
