@@ -5,7 +5,7 @@ from pathlib import Path
 
 # Bind + output
 LISTEN_IP = "0.0.0.0"
-PORT = 5012
+PORT = 5013
 OUT_FILE = "received.bin"
 
 # Datagram format: 4-byte big-endian seq + payload
@@ -47,8 +47,10 @@ def main():
 
             seq = HDR.unpack_from(pkt, 0)[0]
             payload = pkt[4:]
-            previous_rx_time = time.time()
-
+            
+            if seq != EOF_SEQ:
+                previous_rx_time = time.time()
+            
             # Start timing on first non-EOF packet
             if first_rx_time is None and seq != EOF_SEQ:
                 first_rx_time = time.time()
@@ -102,9 +104,9 @@ def main():
                 print(f"[RX] expected_seq={expected_seq}  rx_bytes={received_payload_bytes}  avg_Mbps={mbps:.2f}")
                 last_print = now
                 
-            if now - previous_rx_time >= 5:
+            if now - previous_rx_time >= 3:
                 # Timeout!
-                last_rx_time = previous_rx_time()
+                last_rx_time = previous_rx_time
                 print(f"[ERR] System timed out")
 
                 # Write missing ranges log + compute lost_packets correctly
